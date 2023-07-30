@@ -1,0 +1,4 @@
+.clang*
+/src/tests
+/cmake-build-debug
+/cmake_modules
