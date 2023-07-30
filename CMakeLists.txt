@@ -27,14 +27,17 @@ MACRO(SUBDIRLIST result curdir)
     SET(${result} ${dirlist})
 ENDMACRO()
 
+# find all cpp files in src
+FILE(GLOB src_sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+
 # find subdirectories in src that contain code for classes
 SUBDIRLIST(SOURCE_DIRECTORIES src)
 
 # in each subdirectory, find cpp files and add them to the source list
-set(SOURCES "")
+set(SOURCES ${src_sources})
 set(TEST_SOURCES "")
 FOREACH(subdir ${SOURCE_DIRECTORIES})
-    FILE(GLOB sources CONFIGURE_DEPENDS ${subdir}/*cpp)
+    FILE(GLOB sources CONFIGURE_DEPENDS ${subdir}/*.cpp)
     FILE(GLOB test_sources CONFIGURE_DEPENDS ${subdir}/test*.cpp)
 
     LIST(APPEND SOURCES ${sources})
