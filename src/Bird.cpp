@@ -1,6 +1,6 @@
 #include "Bird.h"
 
-Bird::Bird() : gravity(10), flapSpeed(250) {
+Bird::Bird() : gravity(20), flapSpeed(370) {
     texture.loadFromFile("../assets/yellowbird-upflap.png");
     birdSprite.setTexture(texture);
     resetBirdPosition();
