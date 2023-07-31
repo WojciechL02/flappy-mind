@@ -10,8 +10,8 @@ public:
     sf::RenderWindow &window;
 
 private:
-//    sf::Texture bgTexture;
+    sf::Texture bgTexture;
+    sf::Sprite bgSprite;
     Button startGameBtn;
     void draw();
-//    void startGame();
 };

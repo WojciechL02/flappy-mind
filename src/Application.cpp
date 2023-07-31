@@ -4,7 +4,12 @@
 
 Application::Application(sf::RenderWindow &window) : window(window) {
     this->window.setFramerateLimit(60);
-//    add button
+
+    bgTexture.loadFromFile("../assets/background-day.png");
+    bgSprite.setTexture(bgTexture);
+    bgSprite.setPosition(0.f, 0.f);
+
+    // TODO: add buttons
     startGameBtn = Button(100.f, 100.f, sf::Color::Green, sf::Vector2f(50.f, 50.f));
 }
 
@@ -24,9 +29,6 @@ void Application::run() {
 
                         GameManager game(window, agent);
                         game.startGame();
-
-                        isRunning = false;
-                        window.close();
                     }
                 }
             }
@@ -38,5 +40,6 @@ void Application::run() {
 }
 
 void Application::draw() {
+    window.draw(bgSprite);
     window.draw(startGameBtn.getShape());
 }
