@@ -1,4 +1,6 @@
 #include "Application.h"
+#include "GameManager.h"
+#include "HumanAgent.h"
 
 Application::Application(sf::RenderWindow &window) : window(window) {
     this->window.setFramerateLimit(60);
@@ -17,7 +19,12 @@ void Application::run() {
             } else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (startGameBtn.isPressed(float(event.mouseButton.x), float(event.mouseButton.y))) {
-                        // TODO: start game
+                        // TODO: create agent
+                        HumanAgent agent;
+
+                        GameManager game(window, agent);
+                        game.startGame();
+
                         isRunning = false;
                         window.close();
                     }
