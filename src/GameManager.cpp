@@ -8,7 +8,8 @@ GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win),
                                                                 pipesSpawnTime(81),
                                                                 pipesCounter(80),
                                                                 score(0),
-                                                                runGame(true) {
+                                                                runGame(true),
+                                                                canAddPoint(true) {
     bgTexture.loadFromFile("../assets/background-day.png");
     bgSprite.setTexture(bgTexture);
     bgSprite.setPosition(0.f, 0.f);
@@ -19,6 +20,13 @@ GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win),
 
     baseSprite2.setTexture(baseTexture);
     baseSprite2.setPosition(baseSprite1.getGlobalBounds().width, 400.f);
+
+    font.loadFromFile("../assets/Roboto-Bold.ttf");
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(20);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition(15, 15);
+    scoreText.setString("Score: 0");
 
     Pipe::loadTextures();
 }
@@ -60,6 +68,7 @@ void GameManager::processing(sf::Time &time) {
         }
     }
     checkCollision();
+    updateScore();
     bird.update(time);
 }
 
@@ -84,6 +93,23 @@ void GameManager::checkCollision() {
     }
 }
 
+void GameManager::updateScore() {
+    if (pipes.size() > 0) {
+        if (!canAddPoint) {
+            if (bird.birdSprite.getGlobalBounds().left > pipes[0].spriteDown.getGlobalBounds().left &&
+                bird.birdSprite.getGlobalBounds().left + bird.birdSprite.getGlobalBounds().width < pipes[0].getRightBound()) {
+                canAddPoint = true;
+            }
+        } else {
+            if (bird.birdSprite.getGlobalBounds().left > pipes[0].getRightBound()) {
+                score++;
+                scoreText.setString("Score: " + std::to_string(score));
+                canAddPoint = false;
+            }
+        }
+    }
+}
+
 void GameManager::draw() {
     // TODO: draw all the stuff
     window.draw(bgSprite);
@@ -94,4 +120,5 @@ void GameManager::draw() {
     window.draw(baseSprite1);
     window.draw(baseSprite2);
     window.draw(bird.birdSprite);
+    window.draw(scoreText);
 }

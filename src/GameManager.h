@@ -16,7 +16,7 @@ private:
     void processing(sf::Time &time);
     void moveBase(sf::Time &time);
     void checkCollision();
-//    void updateScore();
+    void updateScore();
 //    void restartGame();
     void draw();
 
@@ -28,7 +28,9 @@ private:
     const int pipesSpawnTime;
     int pipesCounter, score;
     const float moveSpeed = 140.f;
-    bool runGame;
+    bool runGame, canAddPoint;
     std::random_device rd;
     std::uniform_int_distribution<int> dist{150,350};
+    sf::Text scoreText;
+    sf::Font font;
 };
