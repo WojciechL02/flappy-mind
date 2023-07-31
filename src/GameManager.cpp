@@ -1,7 +1,18 @@
 #include "GameManager.h"
 #include "GameState.h"
 
-GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win), agent(agent) {}
+GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win), agent(agent) {
+    bgTexture.loadFromFile("../assets/background-day.png");
+    bgSprite.setTexture(bgTexture);
+    bgSprite.setPosition(0.f, 0.f);
+
+    baseTexture.loadFromFile("../assets/base.png");
+    baseSprite1.setTexture(baseTexture);
+    baseSprite1.setPosition(0.f, 400.f);
+
+    baseSprite2.setTexture(baseTexture);
+    baseSprite2.setPosition(baseSprite1.getGlobalBounds().width, 400.f);
+}
 
 void GameManager::startGame() {
     sf::Clock clock;
@@ -17,20 +28,30 @@ void GameManager::startGame() {
 
             if (agent.act(state)) {
                 // TODO: bird jump
-                window.close();
+                bird.flap(time);
             }
         }
 
-//        processing();
-//        draw();
+        processing(time);
+        draw();
         window.display();
     }
 }
 
-//void GameManager::processing() {
-//    // TODO: move ground, pipes and bird
-//}
-//
-//void GameManager::draw() {
-//    // TODO: draw all stuff
-//}
+void GameManager::processing(sf::Time &time) {
+    // TODO: move ground, pipes and bird
+    moveBase(time);
+    bird.update(time);
+}
+
+void GameManager::moveBase(sf::Time &time) {
+    baseSprite1.move(-moveSpeed * time.asSeconds(), 0.f);
+}
+
+void GameManager::draw() {
+    // TODO: draw all stuff
+    window.draw(bgSprite);
+    window.draw(baseSprite1);
+    window.draw(baseSprite2);
+    window.draw(bird.birdSprite);
+}
