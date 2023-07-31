@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <random>
 #include "Agent.h"
 #include "Bird.h"
 #include "Pipe.h"
@@ -14,8 +15,7 @@ public:
 private:
     void processing(sf::Time &time);
     void moveBase(sf::Time &time);
-//    void movePipes();
-//    void checkCollision();
+    void checkCollision();
 //    void updateScore();
 //    void restartGame();
     void draw();
@@ -25,5 +25,10 @@ private:
     sf::Sprite bgSprite, baseSprite1, baseSprite2;
     Bird bird;
     std::vector<Pipe> pipes;
-    const float moveSpeed = 270.f;
+    const int pipesSpawnTime;
+    int pipesCounter, score;
+    const float moveSpeed = 140.f;
+    bool runGame;
+    std::random_device rd;
+    std::uniform_int_distribution<int> dist{150,350};
 };
