@@ -1,19 +1,14 @@
 #include "Button.h"
+#include <iostream>
 
-Button::Button(float posX, float posY, sf::Color color, sf::Vector2f size) {
-    this->shape = sf::RectangleShape(size);
-    this->shape.setPosition(posX, posY);
-    this->shape.setFillColor(color);
+Button::Button(float posX, float posY, sf::Texture &texture) {
+    sprite.setTexture(texture);
+    sprite.setPosition(posX, posY);
 }
 
-sf::RectangleShape Button::getShape() {
-    return shape;
-}
-
-bool Button::isPressed(float x, float y) {
-    auto pos = shape.getPosition();
-    auto size = shape.getSize();
-    if (x > pos.x && x < pos.x + size.x && y > pos.y && y < pos.y + size.y) {
+bool Button::isPressed(float x, float y) const {
+    auto pos = sprite.getGlobalBounds();
+    if (x > pos.left && x < pos.left + pos.width && y > pos.top && y < pos.top + pos.height) {
         return true;
     }
     return false;

@@ -4,11 +4,8 @@
 class Button {
 public:
     Button() = default;
-    Button(float posX, float posY, sf::Color color, sf::Vector2f size);
-    bool isPressed(float x, float y);
+    Button(float posX, float posY, sf::Texture &texture);
+    bool isPressed(float x, float y) const;
 
-    sf::RectangleShape getShape();
-
-private:
-    sf::RectangleShape shape;
+    sf::Sprite sprite;
 };
