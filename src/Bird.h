@@ -11,6 +11,9 @@ public:
     sf::Sprite birdSprite;
 
 private:
-    sf::Texture texture;
+    void makeAnimation();
+
+    sf::Texture textures[3];
     float velocity, flapSpeed, gravity;
+    int animTickCounter, textureIdx;
 };
