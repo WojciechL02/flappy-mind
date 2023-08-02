@@ -10,8 +10,8 @@ public:
     sf::RenderWindow &window;
 
 private:
-    sf::Texture bgTexture;
-    sf::Sprite bgSprite;
-    Button startGameBtn;
+    sf::Texture bgTexture, titleTexture, playerBtnTexture, qlearningBtnTexture, sarsaBtnTexture;
+    sf::Sprite bgSprite, titleSprite;
+    Button humanAgentBtn, qlearningBtn, sarsaBtn;
     void draw();
 };

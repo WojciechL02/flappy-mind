@@ -1,3 +1,4 @@
+#include <memory>
 #include "Application.h"
 #include "GameManager.h"
 #include "HumanAgent.h"
@@ -9,26 +10,42 @@ Application::Application(sf::RenderWindow &window) : window(window) {
     bgSprite.setTexture(bgTexture);
     bgSprite.setPosition(0.f, 0.f);
 
-    // TODO: add buttons
-    startGameBtn = Button(100.f, 100.f, sf::Color::Green, sf::Vector2f(50.f, 50.f));
+    titleTexture.loadFromFile("../assets/title.png");
+    titleSprite.setTexture(titleTexture);
+    titleSprite.setPosition(45.f, 45.f);
+
+    playerBtnTexture.loadFromFile("../assets/player_btn.png");
+    qlearningBtnTexture.loadFromFile("../assets/qlearning_btn.png");
+    sarsaBtnTexture.loadFromFile("../assets/sarsa_btn.png");
+
+    humanAgentBtn = Button(65.f, 220.f, playerBtnTexture);
+    qlearningBtn = Button(65.f, 300.f, qlearningBtnTexture);
+    sarsaBtn = Button(65.f, 380.f, sarsaBtnTexture);
 }
 
 void Application::run() {
-    bool isRunning = true;
-    while (isRunning) {
+    while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                isRunning = false;
                 window.close();
             } else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (startGameBtn.isPressed(float(event.mouseButton.x), float(event.mouseButton.y))) {
-                        // TODO: create agent
-                        HumanAgent agent;
+                    bool isButtonPressed = false;
+                    std::unique_ptr<Agent> agent;
 
-                        GameManager game(window, agent);
-                        game.startGame();
+                    if (humanAgentBtn.isPressed(float(event.mouseButton.x), float(event.mouseButton.y))) {
+                        // TODO: create agent
+                        agent = std::make_unique<HumanAgent>();
+                        isButtonPressed = true;
+                    }// TODO: add other agents
+
+                    if (isButtonPressed) {
+                        GameManager game(window, *agent);
+                        while (game.isRunNewGame()) {
+                            game.startGame();
+                            game.resetGameConfiguration();
+                        }
                     }
                 }
             }
@@ -41,5 +58,8 @@ void Application::run() {
 
 void Application::draw() {
     window.draw(bgSprite);
-    window.draw(startGameBtn.getShape());
+    window.draw(titleSprite);
+    window.draw(humanAgentBtn.sprite);
+    window.draw(qlearningBtn.sprite);
+    window.draw(sarsaBtn.sprite);
 }
