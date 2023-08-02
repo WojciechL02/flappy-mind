@@ -1,7 +1,6 @@
 #include "GameManager.h"
 #include "GameState.h"
 #include "Pipe.h"
-#include <iostream>
 
 GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win),
                                                                 agent(agent),
@@ -9,6 +8,7 @@ GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win),
                                                                 pipesCounter(80),
                                                                 score(0),
                                                                 runGame(true),
+                                                                isAlive(true),
                                                                 canAddPoint(true) {
     bgTexture.loadFromFile("../assets/background-day.png");
     bgSprite.setTexture(bgTexture);
@@ -33,13 +33,17 @@ GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win),
 
 void GameManager::startGame() {
     sf::Clock clock;
-    while (window.isOpen() && runGame) {
+    while (window.isOpen() && runGame && isAlive) {
         sf::Time time = clock.restart();
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
+                runGame = false;
                 window.close();
+            } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                runGame = false;
             }
+
             // TODO: create game state
             GameState state(event);
 
@@ -88,7 +92,7 @@ void GameManager::checkCollision() {
         if (pipes[0].spriteDown.getGlobalBounds().intersects(bird.birdSprite.getGlobalBounds()) ||
             pipes[0].spriteUp.getGlobalBounds().intersects(bird.birdSprite.getGlobalBounds()) ||
             bird.birdSprite.getGlobalBounds().top + bird.birdSprite.getGlobalBounds().width > 400.f) {
-            runGame = false;
+            isAlive = false;
         }
     }
 }
@@ -121,4 +125,20 @@ void GameManager::draw() {
     window.draw(baseSprite2);
     window.draw(bird.birdSprite);
     window.draw(scoreText);
+}
+
+bool GameManager::isRunNewGame() const {
+    if (runGame) {
+        return true;
+    }
+    return false;
+}
+
+void GameManager::resetGameConfiguration() {
+    bird.resetBirdPosition();
+    isAlive = true;
+    pipesCounter = 80;
+    pipes.clear();
+    score = 0;
+    scoreText.setString("Score: 0");
 }

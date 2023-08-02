@@ -8,16 +8,17 @@
 class GameManager {
 public:
     GameManager(sf::RenderWindow &win, Agent &agent);
+    void resetGameConfiguration();
     void startGame();
 
     sf::RenderWindow &window;
+    bool isRunNewGame() const;
 
 private:
     void processing(sf::Time &time);
     void moveBase(sf::Time &time);
     void checkCollision();
     void updateScore();
-//    void restartGame();
     void draw();
 
     Agent &agent;
@@ -28,7 +29,7 @@ private:
     const int pipesSpawnTime;
     int pipesCounter, score;
     const float moveSpeed = 140.f;
-    bool runGame, canAddPoint;
+    bool runGame, isAlive, canAddPoint;
     std::random_device rd;
     std::uniform_int_distribution<int> dist{150,350};
     sf::Text scoreText;
