@@ -6,4 +6,5 @@ public:
     Agent() = default;
     virtual ~Agent() = default;
     virtual bool act(GameState &gameState) = 0;
+    virtual int getTimer() = 0;
 };
