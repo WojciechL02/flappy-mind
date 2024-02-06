@@ -11,6 +11,6 @@ Implementation of 2 RL agents: Q-Learning and SARSA.
 ## Views
 
 <p float="left">
-  <img src="assets/ss_menu.png" width="160" height="250"/>
-  <img src="assets/ss_game.png" width="160" height="250"/>
+  <img src="docs/ss_menu.png" width="160" height="250"/>
+  <img src="docs/ss_game.png" width="160" height="250"/>
 </p>
