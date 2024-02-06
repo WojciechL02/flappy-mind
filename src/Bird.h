@@ -7,6 +7,9 @@ public:
     void resetBirdPosition();
     void flap(sf::Time &time);
     void update(sf::Time &time);
+    float getRightBound();
+    float getDownBound();
+    float getVelocity();
 
     sf::Sprite birdSprite;
 

@@ -32,6 +32,18 @@ void Bird::update(sf::Time &time) {
     }
 }
 
+float Bird::getRightBound() {
+    return birdSprite.getGlobalBounds().left + birdSprite.getGlobalBounds().width;
+}
+
+float Bird::getDownBound() {
+    return birdSprite.getGlobalBounds().top + birdSprite.getGlobalBounds().height;
+}
+
+float Bird::getVelocity() {
+    return velocity;
+}
+
 void Bird::makeAnimation() {
     if (animTickCounter == 5) {
         birdSprite.setTexture(textures[textureIdx]);

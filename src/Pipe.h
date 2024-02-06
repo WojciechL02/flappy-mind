@@ -12,5 +12,5 @@ public:
 
 private:
     static sf::Texture textureDown, textureUp;
-    static const int distanceY = 100, moveSpeed = 140;
+    static const int distanceY = 140, moveSpeed = 80;
 };
