@@ -7,4 +7,7 @@ class HumanAgent : public Agent {
 public:
     HumanAgent() = default;
     bool act(GameState &gameState) override;
+    int getTimer() override {
+        return 0;
+    }
 };

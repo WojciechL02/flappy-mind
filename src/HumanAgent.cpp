@@ -1,4 +1,5 @@
 #include "HumanAgent.h"
+#include <iostream>
 
 bool HumanAgent::act(GameState &gameState) {
     auto event = gameState.event;
