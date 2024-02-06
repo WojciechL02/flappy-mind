@@ -1,15 +1,19 @@
 #include "GameManager.h"
 #include "GameState.h"
 #include "Pipe.h"
+#include <iostream>
 
-GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win),
+GameManager::GameManager(sf::RenderWindow &win, Agent *agent) : window(win),
                                                                 agent(agent),
-                                                                pipesSpawnTime(81),
-                                                                pipesCounter(80),
+                                                                pipesSpawnTime(16),
+                                                                pipesCounter(0),
                                                                 score(0),
                                                                 runGame(true),
                                                                 isAlive(true),
-                                                                canAddPoint(true) {
+                                                                canAddPoint(true),
+                                                                scored(false),
+                                                                isTerminal(false),
+                                                                reward(0.) {
     bgTexture.loadFromFile("../assets/background-day.png");
     bgSprite.setTexture(bgTexture);
     bgSprite.setPosition(0.f, 0.f);
@@ -33,6 +37,8 @@ GameManager::GameManager(sf::RenderWindow &win, Agent &agent) : window(win),
 
 void GameManager::startGame() {
     sf::Clock clock;
+    pipes.push_back(Pipe(dist(rd)));
+
     while (window.isOpen() && runGame && isAlive) {
         sf::Time time = clock.restart();
         sf::Event event;
@@ -43,16 +49,29 @@ void GameManager::startGame() {
             } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
                 runGame = false;
             }
-
-            // TODO: create game state
-            GameState state(event);
-
-            if (agent.act(state)) {
-                bird.flap(time);
-            }
         }
 
+        GameState state(event, bird, pipes, reward, isTerminal);
+
+        if (agent->act(state)) {
+            bird.flap(time);
+        }
+        if (agent->getTimer() == 0) {
+            reward = 0.01;
+            isTerminal = false;
+        }
         processing(time);
+        if (scored) {
+            std::cout << "Score: " << score << std::endl;
+            reward = 1.0;
+        }
+        scored = false;
+        if (!isAlive) {
+            reward = -1.0;
+            isTerminal = true;
+        }
+//        std::cout << reward << std::endl;
+
         draw();
         window.display();
     }
@@ -77,8 +96,8 @@ void GameManager::processing(sf::Time &time) {
 }
 
 void GameManager::moveBase(sf::Time &time) {
-    baseSprite1.move(-moveSpeed * time.asSeconds(), 0.f);
-    baseSprite2.move(-moveSpeed * time.asSeconds(), 0.f);
+    baseSprite1.move(-moveSpeed * time.asSeconds() * 5, 0.f);
+    baseSprite2.move(-moveSpeed * time.asSeconds() * 5, 0.f);
 
     if (baseSprite1.getGlobalBounds().left + baseSprite1.getGlobalBounds().width <= 0) {
         baseSprite1.setPosition(baseSprite2.getGlobalBounds().left + baseSprite2.getGlobalBounds().width, 400.f);
@@ -91,7 +110,8 @@ void GameManager::checkCollision() {
     if (pipes.size() > 0) {
         if (pipes[0].spriteDown.getGlobalBounds().intersects(bird.birdSprite.getGlobalBounds()) ||
             pipes[0].spriteUp.getGlobalBounds().intersects(bird.birdSprite.getGlobalBounds()) ||
-            bird.birdSprite.getGlobalBounds().top + bird.birdSprite.getGlobalBounds().width > 400.f) {
+            bird.getDownBound() >= 400.f ||
+            bird.birdSprite.getGlobalBounds().top <= 0.f) {
             isAlive = false;
         }
     }
@@ -106,6 +126,7 @@ void GameManager::updateScore() {
             }
         } else {
             if (bird.birdSprite.getGlobalBounds().left > pipes[0].getRightBound()) {
+                scored = true;
                 score++;
                 scoreText.setString("Score: " + std::to_string(score));
                 canAddPoint = false;
@@ -115,7 +136,6 @@ void GameManager::updateScore() {
 }
 
 void GameManager::draw() {
-    // TODO: draw all the stuff
     window.draw(bgSprite);
     for (auto &pipe: pipes) {
         window.draw(pipe.spriteDown);
@@ -134,10 +154,14 @@ bool GameManager::isRunNewGame() const {
     return false;
 }
 
+void GameManager::resetAgent() {
+//    agent = nullptr;
+}
+
 void GameManager::resetGameConfiguration() {
     bird.resetBirdPosition();
     isAlive = true;
-    pipesCounter = 80;
+    pipesCounter = 0;
     pipes.clear();
     score = 0;
     scoreText.setString("Score: 0");

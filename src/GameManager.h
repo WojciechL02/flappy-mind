@@ -7,12 +7,13 @@
 
 class GameManager {
 public:
-    GameManager(sf::RenderWindow &win, Agent &agent);
+    GameManager(sf::RenderWindow &win, Agent *agent);
     void resetGameConfiguration();
     void startGame();
 
     sf::RenderWindow &window;
     bool isRunNewGame() const;
+    void resetAgent();
 
 private:
     void processing(sf::Time &time);
@@ -21,15 +22,16 @@ private:
     void updateScore();
     void draw();
 
-    Agent &agent;
+    Agent *agent;
     sf::Texture bgTexture, baseTexture;
     sf::Sprite bgSprite, baseSprite1, baseSprite2;
     Bird bird;
     std::vector<Pipe> pipes;
     const int pipesSpawnTime;
     int pipesCounter, score;
-    const float moveSpeed = 140.f;
-    bool runGame, isAlive, canAddPoint;
+    const float moveSpeed = 80.f;
+    bool runGame, isAlive, canAddPoint, scored, isTerminal;
+    double reward;
     std::random_device rd;
     std::uniform_int_distribution<int> dist{150,350};
     sf::Text scoreText;

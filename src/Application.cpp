@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "GameManager.h"
 #include "HumanAgent.h"
+#include "QLearningAgent.h"
+#include <iostream>
 
 Application::Application(sf::RenderWindow &window) : window(window) {
     this->window.setFramerateLimit(60);
@@ -32,21 +34,27 @@ void Application::run() {
             } else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     bool isButtonPressed = false;
-                    std::unique_ptr<Agent> agent;
+                    Agent* agent = nullptr;
 
                     if (humanAgentBtn.isPressed(float(event.mouseButton.x), float(event.mouseButton.y))) {
-                        // TODO: create agent
-                        agent = std::make_unique<HumanAgent>();
+                        agent = new HumanAgent();
                         isButtonPressed = true;
-                    }// TODO: add other agents
+                    } else if (qlearningBtn.isPressed(float(event.mouseButton.x), float(event.mouseButton.y))) {
+                        agent = new QLearningAgent(0.25, 0.9, 0.8, true);
+                        isButtonPressed = true;
+                    }
 
                     if (isButtonPressed) {
-                        GameManager game(window, *agent);
-                        while (game.isRunNewGame()) {
+                        GameManager game(window, agent);
+                        int episode = 0;
+                        while (game.isRunNewGame() && episode < 10000) {
                             game.startGame();
                             game.resetGameConfiguration();
+                            episode++;
                         }
+                        game.resetAgent();
                     }
+                    delete agent;
                 }
             }
         }
@@ -60,6 +68,6 @@ void Application::draw() {
     window.draw(bgSprite);
     window.draw(titleSprite);
     window.draw(humanAgentBtn.sprite);
-    window.draw(qlearningBtn.sprite);
-    window.draw(sarsaBtn.sprite);
+//    window.draw(qlearningBtn.sprite);
+//    window.draw(sarsaBtn.sprite);
 }
